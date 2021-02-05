@@ -52,7 +52,7 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - \
 # Install latest chrome dev package.
 # Note: this also installs the necessary libs so we don't need the previous RUN command.
 RUN  wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-  && if [[ "${ARCH}" == "arm64v8" ]]; then binarch="arm64"; else binarch="amd64"; fi && \
+  && if [[ "${ARCH}" == "arm64v8" ]]; then binarch="arm64"; else binarch="amd64"; fi \
   && sh -c 'echo "deb [arch=${binarch}] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
