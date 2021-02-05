@@ -1,6 +1,7 @@
 ARG ARCH=docker.io
 FROM ${ARCH}/debian:buster
 ARG ARCH
+ARG BINARCH
 LABEL maintainer="Huan LI (李卓桓) <zixia@zixia.net>"
 
 ENV DEBIAN_FRONTEND     noninteractive
@@ -52,8 +53,7 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - \
 # Install latest chrome dev package.
 # Note: this also installs the necessary libs so we don't need the previous RUN command.
 RUN  wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-  && if [[ "${ARCH}" == "arm64v8" ]]; then binarch="arm64"; else binarch="amd64"; fi \
-  && sh -c 'echo "deb [arch=${binarch}] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+  && sh -c 'echo "deb [arch=${BINARCH}] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
     google-chrome-unstable \

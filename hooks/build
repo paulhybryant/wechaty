@@ -2,13 +2,16 @@
 
 ARCH=("amd64" "arm64v8")
 for arch in ${ARCH[@]}; do
-  base="${arch}"
   if [[ "${arch}" == "amd64" ]]; then
     base="docker.io"
+    binarch="amd64"
+  else
+    base="arm64v8"
+    binarch="arm64"
   fi
 
-  echo "docker build . --build-arg ARCH=${base} -t ${DOCKER_REPO}:${arch}"
-  docker build . --build-arg ARCH=${base} -t ${DOCKER_REPO}:${arch}
+  echo "docker build . --build-arg ARCH=${base} --build-arg BINARCH=${binarch} -t ${DOCKER_REPO}:${arch}"
+  docker build . --build-arg ARCH=${base} --build-arg BINARCH=${binarch} -t ${DOCKER_REPO}:${arch}
   echo "docker push ${DOCKER_REPO}:${arch}"
   docker push ${DOCKER_REPO}:${arch}
 done
