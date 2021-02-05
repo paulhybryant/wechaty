@@ -1,4 +1,6 @@
-FROM debian:buster
+ARG ARCH=docker.io
+FROM ${ARCH}/debian:buster
+ARG ARCH
 LABEL maintainer="Huan LI (李卓桓) <zixia@zixia.net>"
 
 ENV DEBIAN_FRONTEND     noninteractive
@@ -6,6 +8,8 @@ ENV WECHATY_DOCKER      1
 ENV LC_ALL              C.UTF-8
 ENV NODE_ENV            $NODE_ENV
 ENV NPM_CONFIG_LOGLEVEL warn
+
+COPY hooks/qemu-aarch64-static /usr/bin/
 
 # Installing the 'apt-utils' package gets rid of the 'debconf: delaying package configuration, since apt-utils is not installed'
 # error message when installing any other package with the apt-get package manager.
@@ -48,7 +52,8 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - \
 # Install latest chrome dev package.
 # Note: this also installs the necessary libs so we don't need the previous RUN command.
 RUN  wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-  && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+  && if [[ "${ARCH}" == "arm64v8" ]]; then binarch="arm64"; else binarch="amd64"; fi && \
+  && sh -c 'echo "deb [arch=${binarch}] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
     google-chrome-unstable \
